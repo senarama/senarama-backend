@@ -5,6 +5,12 @@ const isEmpty = (val) => {
   if (typeof val === 'number') return false;
   if (val === '') return true;
   if (val.length === 0) return true;
+  if (Array.isArray(val)) {
+    if (val.length === 0) return true;
+    if (val.length > 0) {
+      return val.filter((i) => !isEmpty(i)).length === 0;
+    }
+  }
   if (typeof val === 'object' && Object.keys(val).length === 0) return true;
 
   return false;

@@ -26,7 +26,14 @@ const checkForm = (validator = checkLoginInput) => {
     } else {
       req.formInfo = { ...data };
       req.formName = formName;
-      next();
+      if (req.formInfo.role === 'admin') {
+        res.status(401).json({
+          ok: false,
+          msg: 'No se puede crear un usuario administrador usando este metodo',
+        });
+      } else {
+        next();
+      }
     }
   };
   return checkFormInfo;
