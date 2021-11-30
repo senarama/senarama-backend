@@ -1,14 +1,14 @@
 const projectRouter = require('express').Router();
 const activate = require('../controllers/actions/activate');
 const checkToken = require('../middlewares/jwt');
-const { checkAdmin } = require('../middlewares/user-check');
+const { checkAdminStrict, checkIdentity, checkUserStrict } = require('../middlewares/user-check');
 
-projectRouter.delete('/:id/delete');
-projectRouter.get('/all');
-projectRouter.get('/:id');
-projectRouter.get('/:uid/all');
-projectRouter.post('/:id/activate', checkToken, checkAdmin, activate);
+projectRouter.delete('/:id/delete', checkToken, checkIdentity);
+projectRouter.get('/all', checkToken, checkIdentity);
+projectRouter.get('/:id', checkToken, checkIdentity);
+projectRouter.get('/:uid/all', checkToken, checkIdentity);
+projectRouter.post('/:id/activate', checkToken, checkAdminStrict, activate);
 projectRouter.post('/create');
-projectRouter.post('/:id/update');
+projectRouter.post('/:id/update', checkToken, checkUserStrict);
 
 module.exports = projectRouter;

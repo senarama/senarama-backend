@@ -1,4 +1,5 @@
 const { request, response } = require('express');
+const logError = require('../../helpers/error-format');
 const isEmpty = require('../../helpers/is-empty');
 const User = require('../../models/user');
 
@@ -10,8 +11,10 @@ const User = require('../../models/user');
  */
 const activate = async (req = request, res = response) => {
   const { id } = req.params;
+  // get the activation type
   const type = req.path.search(/users/g) ? 'usuario' : 'proyecto';
   try {
+    // update document if exists
     const updatedDocument = await User.findByIdAndUpdate(
       id,
       { active: true, status: true },
@@ -28,7 +31,7 @@ const activate = async (req = request, res = response) => {
       msg: `Se activo el ${type} con el ID: ${id}`,
     });
   } catch (error) {
-    console.log(error);
+    logError(error);
     return res.status(500).json({
       ok: false,
       msg: 'Contact website admin',

@@ -1,7 +1,8 @@
 const StackUtils = require('stack-utils');
+const chalk = require('chalk');
 
 const excludeArray = [
-  /.*?\/node_modules.*?\.js/,
+  // /.*?\/node_modules.*?\.js/,
   /.*?<anonym.*?>/,
 ];
 
@@ -10,20 +11,35 @@ const stack = new StackUtils({
   internals: StackUtils.nodeInternals().concat(excludeArray),
 });
 
-const logError = (error = new Error()) => {
-  const stackList = stack.clean(error.stack).split('\n')
-    .filter((i) => !!i)
-    .map((i, p) => (p === 0 ? i : `\n    ${i}`))
-    .toString()
-    .replace(/,/g, '');
+const filterStacks = (stacks = []) => (
+  stacks.filter((i) => i.search(/.*?de_modules.*?\./) === -1 && i)
+);
 
-  // console.log(errorObj);
+const formatStacks = (stacks = []) => (
+  stacks.map((i, p) => (p === 0 ? i : `\n\t\t ${i}`))
+);
+
+const getStacks = (errorStacks, extendedStacks = false) => {
+  const stacks = stack.clean(errorStacks).split('\n');
+  return (
+    extendedStacks ? stacks : filterStacks(stacks)
+  );
+};
+
+const stringStacks = (stacks = []) => stacks.toString().replace(/,/g, '');
+
+const logError = (error = new Error(), extended = false) => {
+  const stacks = getStacks(error.stack, extended);
   const errorString = `
-  Error at: ${stackList.split('\n').at(0)}
-  Name: ${error.name}
-  Message: ${error.message}
-  Stack:
-    ${stackList}
+  ${chalk.bold.red('-'.repeat(process.stdout.columns - 10))}
+  ${chalk.bold.red('Error At')}:\t ${chalk.yellow(filterStacks(stacks)[0])}
+  ${chalk.bold.red('Name')}:\t\t ${chalk.red(error.name)}
+  ${chalk.bold.green('Message')}:\t ${error.message}
+
+  ${chalk.bold.blue('Stack')}: ${
+  chalk.bold.blue('-'.repeat(process.stdout.columns - 17))}
+  \t\t ${chalk.blue(stringStacks(formatStacks(stacks)))}
+  ${chalk.bold.red('-'.repeat(process.stdout.columns - 10))}
   `;
 
   console.log(errorString);

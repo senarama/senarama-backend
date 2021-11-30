@@ -1,4 +1,5 @@
 const { connect } = require('mongoose');
+const logError = require('../helpers/error-format');
 const { DB_HOST } = require('./common');
 
 const connectDB = async () => {
@@ -6,7 +7,7 @@ const connectDB = async () => {
     await connect(DB_HOST, { useNewUrlParser: true });
     console.log('Connected to MongoDB');
   } catch (error) {
-    console.error(error);
+    logError(error);
   }
 };
 

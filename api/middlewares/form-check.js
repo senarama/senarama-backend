@@ -9,6 +9,11 @@ const VALIDATOR = {
   SIGNUP: checkSignUpInput,
 };
 
+/**
+ * Check body requests
+ * @param {function} validator function to validate the body request
+ * @returns 401 | 401 http code if any validation fails
+ */
 const checkForm = (validator = checkLoginInput) => {
   const checkFormInfo = (req, res = response, next = () => {}) => {
     const {
@@ -24,7 +29,7 @@ const checkForm = (validator = checkLoginInput) => {
         errors,
       });
     } else {
-      req.formInfo = { ...data };
+      req.formInfo = { ...data }; // save parsed data
       req.formName = formName;
       if (req.formInfo.role === 'admin') {
         res.status(401).json({

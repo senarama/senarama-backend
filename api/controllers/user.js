@@ -1,4 +1,5 @@
 const { request, response } = require('express');
+const logError = require('../helpers/error-format');
 const isEmpty = require('../helpers/is-empty');
 const { generateToken } = require('../helpers/jwt');
 const { hashPasswd, matchPasswd } = require('../helpers/password');
@@ -51,7 +52,7 @@ const login = async (req = request, res = response) => {
     });
   } catch (error) {
     // internal error
-    console.log(error);
+    logError(error);
     return res.status(500).json({
       ok: false,
       msg: 'Contact website admin',
