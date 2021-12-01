@@ -19,9 +19,16 @@ const checkSignUpInput = (reqBody, isUpdate = false) => {
     data.active = false;
     data.email = isEmpty(reqBody.email) ? '' : reqBody.email;
     data.idType = isEmpty(reqBody.idType) ? '' : reqBody.idType;
-    data.role = isEmpty(reqBody.role) ? 'learner' : reqBody.role;
+    data.role = isEmpty(reqBody.role) ? 'senarauta' : reqBody.role;
     data.state = false;
     data.userID = isEmpty(reqBody.userID) ? null : reqBody.userID;
+  } else {
+    delete data.active;
+    delete data.email;
+    delete data.idType;
+    delete data.userID;
+    delete data.role;
+    delete data.state;
   }
 
   // email check

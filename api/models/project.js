@@ -21,6 +21,10 @@ const projectSchema = Schema({
     required: true,
     type: String,
   },
+  isProject: {
+    default: true,
+    type: Boolean,
+  },
   members: {
     default: [],
     type: Array,
@@ -48,6 +52,7 @@ const projectSchema = Schema({
   title: {
     required: true,
     type: String,
+    unique: true,
   },
   uid: {
     default: null,
@@ -59,4 +64,5 @@ const projectSchema = Schema({
   },
 });
 
-module.exports = model('Project', projectSchema);
+const Project = model('Project', projectSchema);
+module.exports = Project;

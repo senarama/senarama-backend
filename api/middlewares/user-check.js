@@ -1,4 +1,3 @@
-const { request, response } = require('express');
 const logError = require('../helpers/error-format');
 const isEmpty = require('../helpers/is-empty');
 const User = require('../models/user');
@@ -6,6 +5,8 @@ const User = require('../models/user');
 const checkIdentity = async (req, res, next) => {
   const { uid, role } = req.userInfo;
   const userUID = req.params.id ? req.params.id : req.params.uid;
+  req.userInfo.admin = false;
+
   try {
     const userDocument = await User.findById(uid);
     if (isEmpty(userDocument)) {
@@ -80,6 +81,7 @@ const checkAdminStrict = async (req, res, next) => {
  */
 const checkUserStrict = (req, res, next) => {
   const { uid } = req.userInfo;
+  req.userInfo.admin = false;
   const uidParam = req.params.id;
   // check if a token uid matches with the params uid
   if (uid === uidParam) {
@@ -105,6 +107,7 @@ const checkUser = (req, _, next) => {
   const { uid } = req.userInfo;
   const uidParam = req.params.id;
   // check if user uid match
+  req.userInfo.admin = false;
   if (uid === uidParam) {
     req.userInfo.same = true;
     next();

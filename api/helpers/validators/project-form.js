@@ -1,21 +1,31 @@
 const isEmpty = require('../is-empty');
 
-const checkProjectInput = (reqBody) => {
+const checkProjectInput = (reqBody, edit = false) => {
   const data = { ...reqBody };
   const errors = {};
 
-  data.active = false;
   data.collaborators = isEmpty(data.collaborators) ? [] : data.collaborators;
   data.description = isEmpty(data.description) ? '' : data.description;
   data.members = isEmpty(data.members) ? [] : data.members;
-  data.onListing = false;
-  data.owner = isEmpty(data.owner) ? '' : data.owner;
+  // data.owner = isEmpty(data.owner) ? '' : data.owner;
   data.projectName = isEmpty(data.projectName) ? '' : data.projectName;
   data.projectStatus = isEmpty(data.projectStatus) ? 'started' : data.projectStatus;
   data.resources = isEmpty(data.resources) ? [] : data.resources;
-  data.status = false;
   data.title = isEmpty(data.title) ? '' : data.title;
-  data.uid = isEmpty(data.uid) ? '' : data.uid;
+  data.isProject = true;
+
+  if (!edit) {
+    data.active = false;
+    data.uid = isEmpty(data.uid) ? '' : data.uid;
+    data.status = false;
+    data.onListing = false;
+  } else {
+    data.userUID = data.uid;
+    delete data.active;
+    delete data.uid;
+    delete data.status;
+    delete data.onListing;
+  }
 
   if (isEmpty(data.title)) {
     errors.title = 'Este campo es obligatorio';

@@ -27,7 +27,7 @@ const userSchema = Schema({
     type: String,
   },
   role: {
-    default: 'learner',
+    default: 'senarauta',
     type: String,
   },
   password: {

@@ -1,6 +1,7 @@
 const { request, response } = require('express');
 const logError = require('../../helpers/error-format');
 const isEmpty = require('../../helpers/is-empty');
+const Project = require('../../models/project');
 const User = require('../../models/user');
 
 /**
@@ -12,15 +13,16 @@ const User = require('../../models/user');
 const activate = async (req = request, res = response) => {
   const { id } = req.params;
   // get the activation type
-  const type = req.path.search(/users/g) ? 'usuario' : 'proyecto';
+  const type = req.path.search(/users/) !== -1 ? 'usuario' : 'proyecto';
   try {
     // update document if exists
-    const updatedDocument = await User.findByIdAndUpdate(
+    const dbModel = type === 'usuario' ? User : Project;
+    const updatedDocument = await dbModel.findByIdAndUpdate(
       id,
       { active: true, status: true },
       { new: true },
     );
-    if (!isEmpty(updatedDocument)) {
+    if (isEmpty(updatedDocument)) {
       return res.status(404).json({
         ok: false,
         msg: `No se encontro ningún ${type} con el ID: ${id}`,
