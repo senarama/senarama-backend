@@ -14,6 +14,29 @@ const checkSignUpInput = (reqBody, isUpdate = false) => {
   data.social = isEmpty(reqBody.social) ? [] : reqBody.social;
   data.userName = isEmpty(reqBody.userName) ? '' : reqBody.userName;
   data.type = isEmpty(reqBody.userType) ? 'normal' : reqBody.userType;
+  data.social = [
+    {
+      name: 'Facebook',
+      url: data.facebook,
+    },
+    {
+      name: 'Instagram',
+      url: data.instagram,
+
+    },
+    {
+      name: 'Twitter',
+      url: data.twitter,
+    },
+    {
+      name: 'TikTok',
+      url: data.tiktok,
+    },
+    {
+      name: 'YouTube',
+      url: data.youtube,
+    },
+  ];
 
   if (!isUpdate) {
     data.active = false;
