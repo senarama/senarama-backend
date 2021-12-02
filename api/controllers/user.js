@@ -1,5 +1,7 @@
 const { request, response } = require('express');
+const { UPLOAD_USER } = require('../config/common');
 const logError = require('../helpers/error-format');
+const { getName } = require('../helpers/extractor');
 const isEmpty = require('../helpers/is-empty');
 const { generateToken } = require('../helpers/jwt');
 const { hashPasswd, matchPasswd } = require('../helpers/password');
@@ -68,6 +70,11 @@ const login = async (req = request, res = response) => {
  */
 const signup = async (req = request, res = response) => {
   const { email, userID } = req.formInfo;
+  const data = {
+    name: req.files ? getName(req.files.document.name) : '',
+    path: UPLOAD_USER.DOCUMENT,
+  };
+
   try {
     const errors = {};
     // try to find users with the same email or userID
@@ -79,25 +86,31 @@ const signup = async (req = request, res = response) => {
       // reject signup and set errors
       if (!isEmpty(result[0])) errors.email = 'Este email no esta disponible';
       if (!isEmpty(result[1])) errors.userID = 'Este número no esta disponible';
-      res.status(409).json({
+      return res.status(409).json({
         ok: false,
         msg: 'Se encontraron errores en la información',
         errors,
       });
-    } else {
-      // save the information
-      const userDocument = new User(req.formInfo);
-      // encrypt password
-      userDocument.password = await hashPasswd(userDocument.password);
-      await userDocument.save();
-      res.status(200).json({
-        ok: true,
-        msg: 'Información registrada correctamente',
-      });
     }
+    // save the information
+    const userDocument = new User(req.formInfo);
+    // encrypt password
+    userDocument.password = await hashPasswd(userDocument.password);
+    // upload the file
+    if (req.files) {
+      data.path = `${data.path}/${userDocument.id}`;
+      req.files.document.mv(`${data.path}/${data.name}`);
+      data.path = data.path.slice(1, data.path.length);
+      userDocument.document = `${data.path}/${data.name}`;
+    }
+    await userDocument.save();
+    res.status(200).json({
+      ok: true,
+      msg: 'Información registrada correctamente',
+    });
   } catch (error) {
     // internal error
-    console.log(error);
+    logError(error);
     res.status(500).json({
       ok: false,
       msg: 'Contact website admin',

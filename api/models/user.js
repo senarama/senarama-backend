@@ -9,6 +9,10 @@ const userSchema = Schema({
     required: true,
     type: String,
   },
+  document: {
+    default: null,
+    type: String,
+  },
   email: {
     required: true,
     type: String,

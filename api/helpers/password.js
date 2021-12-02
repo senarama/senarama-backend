@@ -9,8 +9,7 @@ const logError = require('./error-format');
  */
 const matchPasswd = async (password, hash) => {
   try {
-    const match = await bcryptjs.compare(password, hash);
-    return match;
+    return await bcryptjs.compare(password, hash);
   } catch (error) {
     logError(error);
     return false;
@@ -26,8 +25,7 @@ const hashPasswd = async (password) => {
   try {
     // hash the password and return the result
     const salt = await bcryptjs.genSalt();
-    const hash = await bcryptjs.hash(password, salt);
-    return hash;
+    return await bcryptjs.hash(password, salt);
   } catch (error) {
     logError(error);
     throw new Error(error.message);

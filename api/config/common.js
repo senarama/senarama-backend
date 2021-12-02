@@ -8,9 +8,16 @@ const { PORT } = process.env;
 const PRIV_KEY = readFileSync(`${ROOT}/keys/secret-key.key`);
 const PUB_KEY = readFileSync(`${ROOT}/keys/secret-key.pub`);
 
+const UPLOAD_USER = {
+  PICTURE: `${ROOT}/uploads/users`,
+  VIDEO: `${ROOT}/uploads/users`,
+  DOCUMENT: `${ROOT}/uploads/users`,
+};
+
 module.exports = {
   DB_HOST,
   PORT,
   PRIV_KEY,
   PUB_KEY,
+  UPLOAD_USER,
 };

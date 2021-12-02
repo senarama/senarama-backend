@@ -1,16 +1,19 @@
+const { v4: uuid } = require('uuid');
+
 const extractProjectInfo = (projectInfo = {}, type = 'admin') => {
   const data = { ...projectInfo.toObject() };
   switch (type) {
     case 'admin':
-      return data;
+      break;
     case 'other':
       delete data.state;
       delete data.active;
       delete data.onListing;
-      return data;
+      break;
     default:
-      return data;
+      break;
   }
+  return data;
 };
 
 const extractProjectsInfo = (projects = [], type = 'admin') => (
@@ -20,11 +23,10 @@ const extractProjectsInfo = (projects = [], type = 'admin') => (
 
 const extractUserInfo = (userInfo = {}, type = 'admin') => {
   const data = { ...userInfo };
-  // console.log(userInfo);
   switch (type) {
     case 'admin':
       delete data.password;
-      return data;
+      break;
     case 'other':
       delete data.password;
       delete data.role;
@@ -32,10 +34,11 @@ const extractUserInfo = (userInfo = {}, type = 'admin') => {
       delete data.idType;
       delete data.active;
       delete data.state;
-      return data;
+      break;
     default:
-      return data;
+      break;
   }
+  return data;
 };
 
 const extractUsersInfo = (users = [], type = 'admin') => (
@@ -43,9 +46,12 @@ const extractUsersInfo = (users = [], type = 'admin') => (
     .map((user) => extractUserInfo(user.toObject(), type))
 );
 
+const getName = (filename = '') => `${uuid()}.${filename.split('.').pop()}`;
+
 module.exports = {
   extractProjectInfo,
   extractProjectsInfo,
   extractUserInfo,
   extractUsersInfo,
+  getName,
 };

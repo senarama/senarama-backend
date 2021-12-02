@@ -1,6 +1,7 @@
 const uploadRouter = require('express').Router();
+const { getFile } = require('../controllers/upload');
 const checkToken = require('../middlewares/jwt');
-const { checkIdentity } = require('../middlewares/user-check');
+const { checkIdentity, checkUserStrict } = require('../middlewares/user-check');
 
 uploadRouter.delete(
   '/upload/images/projects/:filename',
@@ -23,7 +24,15 @@ uploadRouter.get(
   checkToken,
   checkIdentity,
 );
-// uploadRouter.get('/uploads/videos/projects/:filename');
+
+uploadRouter.get(
+  '/uploads/users/:id/:filename',
+  checkToken,
+  checkIdentity,
+  getFile,
+);
+
+// uploadRouter.get('/uploads/videos/projects/:filename')
 uploadRouter.get(
   '/uploads/videos/users/:filename',
   checkToken,
@@ -31,8 +40,14 @@ uploadRouter.get(
 );
 
 uploadRouter.post('/upload/project/image');
-// uploadRouter.post('/upload/project/video');
-uploadRouter.post('/upload/user/image');
+
+// uploadRouter.post('/upload/project/video')
+uploadRouter.post(
+  '/upload/user/image',
+  checkToken,
+  checkUserStrict,
+);
+
 uploadRouter.post('/upload/user/video');
 
 uploadRouter.put(
@@ -50,6 +65,11 @@ uploadRouter.put(
   '/upload/user/video/:id/update',
   checkToken,
   checkIdentity,
+);
+
+uploadRouter.post(
+  '/upload/user/document',
+  checkToken,
 );
 
 module.exports = uploadRouter;

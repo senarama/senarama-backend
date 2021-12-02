@@ -10,7 +10,7 @@ const app = express();
 connectDB();
 
 // middlewares
-app.use(fileUpload({ useTempFiles: true }));
+app.use(fileUpload({ useTempFiles: true, createParentPath: true }));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
