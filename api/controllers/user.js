@@ -70,6 +70,7 @@ const login = async (req = request, res = response) => {
  */
 const signup = async (req = request, res = response) => {
   const { email, userID } = req.formInfo;
+  console.log(req.files);
   const data = {
     name: req.files.document.name,
     path: UPLOAD_USER.DOCUMENT,
