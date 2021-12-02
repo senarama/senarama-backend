@@ -71,7 +71,7 @@ const login = async (req = request, res = response) => {
 const signup = async (req = request, res = response) => {
   const { email, userID } = req.formInfo;
   const data = {
-    name: req.files ? getName(req.files.document.name) : '',
+    name: req.files.document.name,
     path: UPLOAD_USER.DOCUMENT,
   };
 
@@ -97,12 +97,12 @@ const signup = async (req = request, res = response) => {
     // encrypt password
     userDocument.password = await hashPasswd(userDocument.password);
     // upload the file
-    if (req.files) {
-      data.path = `${data.path}/${userDocument.id}`;
-      req.files.document.mv(`${data.path}/${data.name}`);
-      data.path = data.path.slice(1, data.path.length);
-      userDocument.document = `${data.path}/${data.name}`;
-    }
+    // if (req.files) {
+    data.path = `${data.path}/${userDocument.id}`;
+    req.files.document.mv(`${data.path}/${data.name}`);
+    data.path = data.path.slice(1, data.path.length);
+    userDocument.document = `${data.path}/${data.name}`;
+    // }
     await userDocument.save();
     res.status(200).json({
       ok: true,
